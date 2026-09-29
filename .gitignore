@@ -1,0 +1,16 @@
+.env
+.cache/
+__pycache__/
+*.pyc
+.venv/
+venv/
+data/raw/*.pdf
+data/processed/
+# Render Docker bundle (scripts/prepare_deploy.py) — not the same as data/processed/
+!deploy/bundle/
+!deploy/bundle/**
+.pytest_cache/
+eval_report.json
+eval_report_*.json
+demo-ui/node_modules
+demo-ui/dist

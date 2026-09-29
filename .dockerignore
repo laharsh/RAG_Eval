@@ -1,0 +1,13 @@
+.venv
+venv
+.env
+.cache
+__pycache__
+*.pyc
+.pytest_cache
+demo-ui/node_modules
+demo-ui/dist
+.git
+data/raw
+data/processed
+projects-plan

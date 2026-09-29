@@ -1,0 +1,352 @@
+[
+  {
+    "id": 1,
+    "theme": "nist_rmf",
+    "question": "What are the four functions in the NIST AI RMF?",
+    "expected_answer_contains": ["govern", "map", "measure", "manage"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 2,
+    "theme": "nist_rmf",
+    "question": "What does the GOVERN function cover in the NIST AI RMF?",
+    "expected_answer_contains": ["govern", "culture", "risk"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 3,
+    "theme": "nist_rmf",
+    "question": "What does the MAP function do in the NIST AI Risk Management Framework?",
+    "expected_answer_contains": ["map", "context", "risk"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 4,
+    "theme": "nist_rmf",
+    "question": "What is the purpose of the MEASURE function in NIST AI RMF?",
+    "expected_answer_contains": ["measure", "assess", "metric"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 5,
+    "theme": "nist_rmf",
+    "question": "What is the MANAGE function in the NIST AI RMF?",
+    "expected_answer_contains": ["manage", "risk", "response"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 6,
+    "theme": "nist_rmf",
+    "question": "Is the NIST AI RMF legally binding?",
+    "expected_answer_contains": ["voluntary", "guidance"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 7,
+    "theme": "nist_rmf",
+    "question": "Who published the NIST AI Risk Management Framework?",
+    "expected_answer_contains": ["nist", "national institute"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 8,
+    "theme": "nist_rmf",
+    "question": "What is trustworthy AI according to the NIST AI RMF?",
+    "expected_answer_contains": ["valid", "reliable", "safe"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 9,
+    "theme": "nist_rmf",
+    "question": "What are AI actors in the NIST AI RMF?",
+    "expected_answer_contains": ["actor", "organization", "stakeholder"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 10,
+    "theme": "nist_rmf",
+    "question": "How does NIST AI RMF define AI risk?",
+    "expected_answer_contains": ["risk", "harm", "impact"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 11,
+    "theme": "eu_ai_act",
+    "question": "What practices are prohibited under Article 5 of the EU AI Act?",
+    "expected_answer_contains": ["prohibited", "subliminal", "manipulat"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 12,
+    "theme": "eu_ai_act",
+    "question": "Does the EU AI Act ban social scoring by public authorities?",
+    "expected_answer_contains": ["social", "scoring", "prohibit"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 13,
+    "theme": "eu_ai_act",
+    "question": "What is a high-risk AI system under the EU AI Act?",
+    "expected_answer_contains": ["high-risk", "risk", "annex"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 14,
+    "theme": "eu_ai_act",
+    "question": "What are the penalties for non-compliance with prohibited AI practices in the EU AI Act?",
+    "expected_answer_contains": ["fine", "administrative", "percent"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 15,
+    "theme": "eu_ai_act",
+    "question": "What is a general-purpose AI model under the EU AI Act?",
+    "expected_answer_contains": ["general-purpose", "model", "capability"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 16,
+    "theme": "eu_ai_act",
+    "question": "Who does the EU AI Act apply to?",
+    "expected_answer_contains": ["provider", "deployer", "union"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 17,
+    "theme": "eu_ai_act",
+    "question": "What transparency obligations apply to certain AI systems under the EU AI Act?",
+    "expected_answer_contains": ["transparency", "inform", "person"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 18,
+    "theme": "eu_ai_act",
+    "question": "What is an AI system according to the EU AI Act?",
+    "expected_answer_contains": ["machine", "system", "infer"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 19,
+    "theme": "eu_ai_act",
+    "question": "What is AI literacy under the EU AI Act?",
+    "expected_answer_contains": ["literacy", "staff", "knowledge"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 20,
+    "theme": "eu_ai_act",
+    "question": "Are remote biometric identification systems regulated under the EU AI Act?",
+    "expected_answer_contains": ["biometric", "identification", "real-time"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 21,
+    "theme": "eu_ai_act",
+    "question": "What obligations do providers of high-risk AI systems have?",
+    "expected_answer_contains": ["provider", "high-risk", "requirement"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 22,
+    "theme": "eu_ai_act",
+    "question": "What is the role of market surveillance authorities under the EU AI Act?",
+    "expected_answer_contains": ["market", "surveillance", "authority"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 23,
+    "theme": "eu_ai_act",
+    "question": "Does the EU AI Act support AI sandboxes for innovation?",
+    "expected_answer_contains": ["sandbox", "innovation", "regulatory"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 24,
+    "theme": "eu_ai_act",
+    "question": "What are GPAI models with systemic risk under the EU AI Act?",
+    "expected_answer_contains": ["systemic", "risk", "general-purpose"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 25,
+    "theme": "eu_ai_act",
+    "question": "When did the EU AI Act enter into force?",
+    "expected_answer_contains": ["2024", "august", "force"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 26,
+    "theme": "dpdp",
+    "question": "How does India DPDP define a Data Principal?",
+    "expected_answer_contains": ["data principal", "individual", "personal data"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 27,
+    "theme": "dpdp",
+    "question": "What is a Data Fiduciary under the India DPDP Act?",
+    "expected_answer_contains": ["data fiduciary", "determin", "purpose"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 28,
+    "theme": "dpdp",
+    "question": "What is personal data under the Digital Personal Data Protection Act 2023?",
+    "expected_answer_contains": ["personal data", "identif"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 29,
+    "theme": "dpdp",
+    "question": "What rights does a Data Principal have under DPDP?",
+    "expected_answer_contains": ["right", "correction", "erase"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 30,
+    "theme": "dpdp",
+    "question": "What is consent under the India DPDP Act?",
+    "expected_answer_contains": ["consent", "free", "informed"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 31,
+    "theme": "dpdp",
+    "question": "Who is a Significant Data Fiduciary under DPDP?",
+    "expected_answer_contains": ["significant", "fiduciary", "government"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 32,
+    "theme": "dpdp",
+    "question": "What is the Data Protection Board of India?",
+    "expected_answer_contains": ["board", "protection", "india"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 33,
+    "theme": "dpdp",
+    "question": "Can personal data of children be processed under DPDP?",
+    "expected_answer_contains": ["child", "guardian", "verif"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 34,
+    "theme": "dpdp",
+    "question": "What are the duties of a Data Principal under DPDP?",
+    "expected_answer_contains": ["duty", "principal", "false"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 35,
+    "theme": "dpdp",
+    "question": "What is a Data Processor under the India DPDP Act?",
+    "expected_answer_contains": ["processor", "behalf", "fiduciary"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 36,
+    "theme": "cross",
+    "question": "Which framework is legally binding in the EU: NIST AI RMF or the EU AI Act?",
+    "expected_answer_contains": ["eu ai act", "binding", "regulation"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 37,
+    "theme": "cross",
+    "question": "Compare NIST AI RMF and the EU AI Act: which one is voluntary guidance?",
+    "expected_answer_contains": ["nist", "voluntary"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 38,
+    "theme": "eu_ai_act",
+    "question": "What is prohibited biometric categorisation under the EU AI Act?",
+    "expected_answer_contains": ["biometric", "categor", "prohibit"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 39,
+    "theme": "eu_ai_act",
+    "question": "Does the EU AI Act regulate emotion recognition systems?",
+    "expected_answer_contains": ["emotion", "recognition"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 40,
+    "theme": "nist_rmf",
+    "question": "What characteristics make AI trustworthy in NIST AI RMF?",
+    "expected_answer_contains": ["secure", "accountable", "transparent"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 41,
+    "theme": "dpdp",
+    "question": "What is legitimate use under the India DPDP Act?",
+    "expected_answer_contains": ["legitimate", "use", "purpose"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 42,
+    "theme": "dpdp",
+    "question": "Can a Data Principal nominate another person under DPDP?",
+    "expected_answer_contains": ["nominat", "death", "incapacity"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 43,
+    "theme": "eu_ai_act",
+    "question": "What documentation must providers of high-risk AI systems keep?",
+    "expected_answer_contains": ["technical", "documentation", "conformity"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 44,
+    "theme": "eu_ai_act",
+    "question": "What is human oversight for high-risk AI systems?",
+    "expected_answer_contains": ["human", "oversight", "interven"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 45,
+    "theme": "nist_rmf",
+    "question": "How should organizations use the NIST AI RMF according to the framework?",
+    "expected_answer_contains": ["flexible", "organization", "risk"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 46,
+    "theme": "dpdp",
+    "question": "What penalties can be imposed under the India DPDP Act?",
+    "expected_answer_contains": ["penalt", "rupee", "board"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 47,
+    "theme": "eu_ai_act",
+    "question": "What is the AI Office under the EU AI Act?",
+    "expected_answer_contains": ["ai office", "commission", "union"],
+    "context_doc": "eu_ai_act.pdf"
+  },
+  {
+    "id": 48,
+    "theme": "nist_rmf",
+    "question": "What is the AI lifecycle in the NIST AI RMF?",
+    "expected_answer_contains": ["lifecycle", "design", "deploy"],
+    "context_doc": "nist_ai_rmf.pdf"
+  },
+  {
+    "id": 49,
+    "theme": "cross",
+    "question": "Which Indian law in this corpus protects digital personal data?",
+    "expected_answer_contains": ["dpdp", "personal data", "2023"],
+    "context_doc": "india_dpdp_act_2023.pdf"
+  },
+  {
+    "id": 50,
+    "theme": "eu_ai_act",
+    "question": "What risk categories does the EU AI Act use?",
+    "expected_answer_contains": ["prohibited", "high-risk", "minimal"],
+    "context_doc": "eu_ai_act.pdf"
+  }
+]

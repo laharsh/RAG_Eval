@@ -1,0 +1,31 @@
+# Render Blueprint — free tier demo (P1 API + static React UI)
+# Docs: docs/DEPLOY.md
+
+services:
+  - type: web
+    name: governance-rag-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: HOSTED_DEMO
+        value: "true"
+      - key: LLM_PROVIDER
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: CORS_ORIGINS
+        value: https://governance-rag-ui.onrender.com,http://localhost:5173
+
+  - type: web
+    name: governance-rag-ui
+    runtime: static
+    plan: free
+    buildCommand: cd demo-ui && npm ci && npm run build
+    staticPublishPath: demo-ui/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://governance-rag-api.onrender.com

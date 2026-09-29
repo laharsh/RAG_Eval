@@ -1,0 +1,12 @@
+---
+description: Git commits and attribution — no AI signatures
+alwaysApply: true
+---
+
+Never add to commits, PRs, or source files:
+
+- `Co-authored-by: Cursor` or `cursoragent@cursor.com`
+- `Made-with: Cursor` or similar trailers
+- Comments stating the code was AI-generated
+
+Use normal commit messages only. The author is the human developer.
