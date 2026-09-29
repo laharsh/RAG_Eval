@@ -23,9 +23,13 @@ services:
   - type: web
     name: governance-rag-ui
     runtime: static
-    plan: free
+    # Static sites are free on Render; do not set `plan` (not valid for runtime: static).
     buildCommand: cd demo-ui && npm ci && npm run build
     staticPublishPath: demo-ui/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_URL
         value: https://governance-rag-api.onrender.com

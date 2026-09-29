@@ -34,6 +34,8 @@ Commit `deploy/bundle/` (faiss_index + chunks.jsonl) or keep private and build D
 
 Or use `render.yaml` at repo root (rename services if URLs differ).
 
+**Blueprint note:** Only the **Docker API** service uses `plan: free`. The **static UI** must omit `plan` — Render rejects `plan: free` on `runtime: static`.
+
 ## 4. Local UI dev
 
 ```powershell
