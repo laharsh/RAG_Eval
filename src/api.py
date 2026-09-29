@@ -27,9 +27,16 @@ app = FastAPI(
     version="0.3.0",
 )
 
+# Hosted demo: allow any Render static-site origin (env typos/trailing slashes are common).
+_cors_origins = list(CORS_ORIGINS)
+_cors_origin_regex: str | None = None
+if HOSTED_DEMO:
+    _cors_origin_regex = r"https://[\w-]+\.onrender\.com$"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=_cors_origins,
+    allow_origin_regex=_cors_origin_regex,
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],

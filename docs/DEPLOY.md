@@ -45,6 +45,13 @@ Or use `render.yaml` at repo root (rename services if URLs differ).
    not `https://governance-rag-ui.onrender.com/`. The browser `Origin` header has no trailing slash.
 2. **502 / API asleep:** On the free tier the API spins down. A failed gateway response has **no** CORS headers, so DevTools shows “CORS error” even when the real issue is the API down or timing out. Open `https://governance-rag-api.onrender.com/health` in a **new tab** — you should see JSON. Wait ~1 min on first load after sleep.
 3. After changing env vars on Render, use **Manual Deploy** on the API service so the new `CORS_ORIGINS` is picked up.
+4. **Verify CORS from your machine** (should include `access-control-allow-origin` for the UI):
+
+   ```bash
+   curl -s -D - -o NUL -H "Origin: https://governance-rag-ui.onrender.com" "https://governance-rag-api.onrender.com/health"
+   ```
+
+   If you only see `localhost` allowed, fix `CORS_ORIGINS` on the API service. With `HOSTED_DEMO=true`, deployed code also allows `https://*.onrender.com` after you redeploy the latest Docker image.
 
 ## 4. Local UI dev
 
