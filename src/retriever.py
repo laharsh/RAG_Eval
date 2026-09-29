@@ -15,24 +15,43 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from src.config import EMBEDDING_MODEL, FAISS_INDEX_PATH, MAX_CONTEXT_CHUNKS, NEIGHBOR_WINDOW, RRF_K, TOP_K
+from src.config import (
+    EMBEDDING_MODEL,
+    FAISS_INDEX_PATH,
+    HOSTED_DEMO,
+    MAX_CONTEXT_CHUNKS,
+    NEIGHBOR_WINDOW,
+    RRF_K,
+    TOP_K,
+)
 from src.opensearch_store import bm25_search, load_chunk_registry
 
 _registry: dict | None = None
 _by_seq: dict[int, str] | None = None  # seq -> chunk_id
+_vectorstore: FAISS | None = None
 
 
 def load_vectorstore() -> FAISS:
+    """Load FAISS once per process (Render free tier cannot reload embeddings every request)."""
+    global _vectorstore
+    if _vectorstore is not None:
+        return _vectorstore
     if not FAISS_INDEX_PATH.exists():
         raise FileNotFoundError(
             f"No index at {FAISS_INDEX_PATH}. Run: python -m src.ingest"
         )
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    return FAISS.load_local(
+    _vectorstore = FAISS.load_local(
         str(FAISS_INDEX_PATH),
         embeddings,
         allow_dangerous_deserialization=True,
     )
+    return _vectorstore
+
+
+def warm_vectorstore() -> None:
+    """Preload index on startup so first /ask does not hit Render's request timeout."""
+    load_vectorstore()
 
 
 def _get_registry() -> dict:
@@ -156,7 +175,7 @@ def retrieve_chunks(
     """
     Hybrid retrieval: FAISS + OpenSearch BM25 → RRF → neighbor expansion.
     """
-    invalidate_registry_cache()  # always use latest registry after re-ingest
+    use_bm25 = use_bm25 and not HOSTED_DEMO
 
     ranked_lists: list[list[str]] = []
     for q in [question] + _auxiliary_vector_queries(question):

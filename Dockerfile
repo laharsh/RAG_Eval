@@ -6,7 +6,9 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1 \
     HOSTED_DEMO=true \
     LLM_PROVIDER=groq \
-    VECTOR_BACKEND=faiss
+    VECTOR_BACKEND=faiss \
+    OMP_NUM_THREADS=1 \
+    TOKENIZERS_PARALLELISM=false
 
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
     && rm -rf /var/lib/apt/lists/*

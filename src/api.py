@@ -12,6 +12,10 @@ Test:
          -d "{\"question\": \"What are the NIST AI RMF functions?\"}"
 """
 
+import logging
+import threading
+from contextlib import asynccontextmanager
+
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,10 +25,30 @@ from src.ingest import run_ingest
 from src.opensearch_store import is_available
 from src.rag_chain import ask
 
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    if HOSTED_DEMO:
+        def _warm() -> None:
+            try:
+                from src.retriever import warm_vectorstore
+
+                warm_vectorstore()
+                logger.info("Vectorstore warmup finished")
+            except Exception:
+                logger.exception("Vectorstore warmup failed")
+
+        threading.Thread(target=_warm, daemon=True).start()
+    yield
+
+
 app = FastAPI(
     title="AI Governance Knowledge Assistant",
     description="Hybrid RAG over EU AI Act, NIST AI RMF, India DPDP",
     version="0.3.0",
+    lifespan=lifespan,
 )
 
 # Hosted demo: allow any Render static-site origin (env typos/trailing slashes are common).

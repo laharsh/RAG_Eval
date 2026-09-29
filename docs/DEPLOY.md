@@ -53,6 +53,15 @@ Or use `render.yaml` at repo root (rename services if URLs differ).
 
    If you only see `localhost` allowed, fix `CORS_ORIGINS` on the API service. With `HOSTED_DEMO=true`, deployed code also allows `https://*.onrender.com` after you redeploy the latest Docker image.
 
+### `/ask` returns 502 (CORS already fixed)
+
+Usually the API process **timed out or OOM** on the first question. Hosted demo skips OpenSearch; older builds still tried `localhost:9200` and could hang ~30–60s → **502**.
+
+1. **Redeploy** `governance-rag-api` from latest `main` (Docker rebuild).
+2. Confirm **`GROQ_API_KEY`** on the API service.
+3. After deploy, wait **1–2 minutes** (background vector warmup), then try **Ask** again.
+4. Check API **Logs** for `Vectorstore warmup finished` or OOM / `GROQ_API_KEY missing`.
+
 ## 4. Local UI dev
 
 ```powershell
