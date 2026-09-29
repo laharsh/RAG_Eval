@@ -36,6 +36,16 @@ Or use `render.yaml` at repo root (rename services if URLs differ).
 
 **Blueprint note:** Only the **Docker API** service uses `plan: free`. The **static UI** must omit `plan` — Render rejects `plan: free` on `runtime: static`.
 
+## Troubleshooting
+
+### “CORS error” in the browser but UI URL looks correct
+
+1. **`CORS_ORIGINS` must not end with `/`.** Use  
+   `https://governance-rag-ui.onrender.com,http://localhost:5173`  
+   not `https://governance-rag-ui.onrender.com/`. The browser `Origin` header has no trailing slash.
+2. **502 / API asleep:** On the free tier the API spins down. A failed gateway response has **no** CORS headers, so DevTools shows “CORS error” even when the real issue is the API down or timing out. Open `https://governance-rag-api.onrender.com/health` in a **new tab** — you should see JSON. Wait ~1 min on first load after sleep.
+3. After changing env vars on Render, use **Manual Deploy** on the API service so the new `CORS_ORIGINS` is picked up.
+
 ## 4. Local UI dev
 
 ```powershell

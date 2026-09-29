@@ -15,6 +15,7 @@ from opensearchpy.exceptions import NotFoundError
 
 from src.config import (
     CHUNKS_REGISTRY_PATH,
+    HOSTED_DEMO,
     OPENSEARCH_HOST,
     OPENSEARCH_INDEX,
     OPENSEARCH_PORT,
@@ -48,6 +49,8 @@ def get_client() -> OpenSearch:
 
 
 def is_available() -> bool:
+    if HOSTED_DEMO:
+        return False
     try:
         return get_client().ping()
     except Exception:

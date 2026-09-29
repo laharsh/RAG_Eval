@@ -68,9 +68,17 @@ PINECONE_NAMESPACE = os.getenv("PINECONE_NAMESPACE", "p1-governance")
 # ── Hosted demo (Render) ───────────────────────────────────────────────────
 HOSTED_DEMO = os.getenv("HOSTED_DEMO", "false").lower() in ("1", "true", "yes")
 # Comma-separated origins for demo UI (no secrets in the browser)
+def _normalize_origin(origin: str) -> str:
+    """Browsers send Origin without a trailing slash; match that in allow_origins."""
+    o = origin.strip()
+    return o.rstrip("/") if o.startswith("http") else o
+
+
 CORS_ORIGINS = [
-    o.strip()
-    for o in os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",")
+    _normalize_origin(o)
+    for o in os.getenv(
+        "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
     if o.strip()
 ]
 
