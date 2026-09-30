@@ -38,7 +38,7 @@ python -m src.eval --ragas-only --judge groq
 - [ ] **Resume bullets** — replace placeholders with real numbers (see template below)
 - [ ] **2-min demo video** — record Loom (hosted UI + 3 questions); link in README
 - [x] **Deploy path** — Dockerfile + `demo-ui` + [docs/DEPLOY.md](docs/DEPLOY.md)
-- [ ] **GitHub push** — public repo, `.env` not committed, README is self-contained setup
+- [x] **GitHub push** — https://github.com/laharsh/RAG_Eval (merge resolved placeholder README)
 
 ### Engineering (planned, not skipped)
 
