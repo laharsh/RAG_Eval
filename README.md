@@ -1,157 +1,165 @@
 # AI Governance Knowledge Assistant
 
-RAG pipeline over **official regulatory PDFs** — EU AI Act, NIST AI RMF, India DPDP Act — with hybrid retrieval, evaluation, and citations.
+RAG over **official regulatory PDFs** (EU AI Act, NIST AI RMF 1.0, India DPDP 2023) with **hybrid retrieval**, **cited answers**, and a **50-question golden evaluation harness** (keyword regression + RAGAS).
 
-> **Use case:** Enterprise compliance teams cannot keyword-search 200-page regulations. This assistant answers natural-language governance questions with source citations.
+**Companion project:** [LangGraph governance agent](https://github.com/laharsh/Langgraph-Multitool-agent-) (SQL + regulatory RAG tool) calls this API.
 
----
-
-## Status: Phase 4 (Evaluation)
-
-| Phase | Feature | Status |
-|-------|---------|--------|
-| 1 | PDF ingest → FAISS → CLI Q&A | Done |
-| 2 | OpenSearch BM25 + RRF + FastAPI | Done |
-| 3 | Pinecone backend (demo mode) | Skipped for now |
-| 4 | RAGAS eval + golden_qa.json | Done |
-| 5 | Demo scripts + integration with P2 | In progress |
-
-**Related:** [Langgraph-Multitool-agent](https://github.com/laharsh/Langgraph-Multitool-agent-) — governance **operations** layer (LangGraph) calls this API.  
-Story: [projects-plan/P1_P2_PRODUCT_STORY.md](../projects-plan/P1_P2_PRODUCT_STORY.md)
-
-See [docs/USE_CASE.md](docs/USE_CASE.md), [docs/INTEGRATION.md](docs/INTEGRATION.md), [projects-plan/FREE_TIER_BUDGET.md](../projects-plan/FREE_TIER_BUDGET.md).
+| | |
+|---|---|
+| **Problem** | Compliance teams cannot keyword-search 200-page regulations; they need natural-language Q&A with traceable sources. |
+| **Approach** | Ingest PDFs → chunk → embed → index (vector + keyword) → retrieve → grounded generation → offline eval. |
+| **Demo** | React UI (`demo-ui/`) + FastAPI; optional [Render deploy](docs/DEPLOY.md). |
 
 ---
 
-## Evaluation snapshot (refresh before resume)
+## Stack (what & why)
 
-| Metric | Value (10 Q, Groq judge) | Command |
-|--------|--------------------------|---------|
-| Faithfulness | 0.34 | `python -m src.eval --limit 10 --ragas-only --judge groq` |
-| Answer relevancy | 0.86 | |
-| Context precision | 0.36 | |
-| Keyword pass (NIST subset) | 100% pass, ~0.80 avg | `python -m src.eval --limit 10 --keyword-only` |
-
-Full golden set: 50 questions in `golden_qa.json`. Close-out: [TODO.md](TODO.md).
+| Layer | Technology | Role in this project |
+|-------|------------|----------------------|
+| **Orchestration** | LangChain | Document loaders, text splitters, vector store adapters |
+| **Embeddings** | Hugging Face `sentence-transformers/all-MiniLM-L6-v2` | Same family used in production RAG; runs locally for ingest/query embedding |
+| **Vector search** | FAISS (local index) | Fast dev iteration; index shipped in Docker for hosted demo |
+| **Vector search (cloud)** | Pinecone | Managed vector DB — [implementation guide](docs/PINECONE.md) (resume / scale path) |
+| **Keyword search** | OpenSearch BM25 | Exact terms (“Article 5”, acronyms); merged with vectors via **RRF** |
+| **Generation** | Groq API (demo) / Ollama (optional dev) | Answers from retrieved context only |
+| **API** | FastAPI | `/health`, `/ask` with source payloads |
+| **Evaluation** | Custom golden harness + **RAGAS** | Faithfulness, answer relevancy, context precision |
+| **UI** | Vite + React | Governance console; API keys stay on server |
 
 ---
 
-## Architecture (Phase 2 — hybrid retrieval)
+## Architecture
 
 ```mermaid
-flowchart LR
-    Q[Question] --> FAISS[FAISS semantic]
-    Q --> OS[OpenSearch BM25]
-    FAISS --> RRF[RRF merge]
-    OS --> RRF
-    RRF --> LLM[Ollama / Groq]
-    LLM --> Answer[Answer + Sources]
+flowchart TB
+    subgraph ingest [Ingest — offline]
+        PDF[Official PDFs] --> Chunk[Chunk 512 / overlap 64]
+        Chunk --> Emb[HF embeddings]
+        Emb --> FAISS[(FAISS)]
+        Chunk --> OS[(OpenSearch BM25)]
+        Chunk --> Reg[(chunks.jsonl registry)]
+    end
+
+    subgraph query [Query — online]
+        Q[Question] --> API[FastAPI]
+        API --> Hy[Hybrid retriever]
+        Hy --> FAISS
+        Hy --> OS
+        Hy --> RRF[RRF + neighbor expansion]
+        RRF --> LLM[Groq / Ollama]
+        LLM --> Out[Answer + sources]
+    end
+
+    subgraph eval [Eval — offline]
+        G[golden_qa.json — 50 Q] --> KW[Keyword regression]
+        G --> RAGAS[RAGAS metrics]
+        KW --> R[eval_report.json]
+        RAGAS --> R
+    end
 ```
+
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/USE_CASE.md](docs/USE_CASE.md)
+
+---
+
+## Evaluation results
+
+Frozen snapshot: [`eval_summary.json`](eval_summary.json). Latest RAGAS dump: `eval_report.json`.
+
+| Suite | n | Metric | Score |
+|-------|---|--------|-------|
+| Keyword regression (full RAG answers) | 50 | Pass rate | **80%** (avg keyword hit **0.76**) |
+| RAGAS · Groq judge (`openai/gpt-oss-20b`) | 50 | Faithfulness | **0.44** |
+| RAGAS · Groq judge | 50 | Answer relevancy | **0.86** |
+| RAGAS · Groq judge | 50 | Context precision | **0.27** |
+
+**How to read this:** answers usually match the question (relevancy). Citations still mix in weakly related chunks (context precision / faithfulness). That is a retrieval problem to improve next (chunking A/B, Pinecone, hybrid vs vector-only)—not a reason to hide the numbers.
+
+Reproduce (Groq quota; skip Ollama for published numbers):
+
+```powershell
+pip install -r requirements-eval.txt
+python -m src.eval --keyword-only
+python -m src.eval --ragas-only --judge groq
+```
+
+Chunking A/B (document in README after runs):
+
+```powershell
+# Bad chunks — re-ingest, then:
+$env:CHUNK_SIZE="1000"; $env:CHUNK_OVERLAP="0"
+python -m src.ingest
+python -m src.eval --ragas-only --judge groq
+# save copy: eval_report_chunk1000.json
+
+# Good chunks (default) — re-ingest, then:
+$env:CHUNK_SIZE="512"; $env:CHUNK_OVERLAP="64"
+python -m src.ingest
+python -m src.eval --ragas-only --judge groq
+# save copy: eval_report_chunk512.json
+```
+
+See [docs/EVAL.md](docs/EVAL.md) · step-by-step [EVAL_RUNBOOK.md](docs/EVAL_RUNBOOK.md).
 
 ---
 
 ## Quick start
 
-### 1. Prerequisites
+**Prerequisites:** Python 3.11+, Docker Desktop (OpenSearch), Groq API key in `.env` for demos.
 
-- Python 3.11+
-- Docker Desktop (for OpenSearch)
-- [Ollama](https://ollama.com) with `llama3.2:3b`
-
-```bash
-ollama pull llama3.2:3b
-```
-
-### 2. Setup
-
-```bash
+```powershell
 cd rag-eval-platform
 python -m venv .venv
-.venv\Scripts\activate        # Windows
+.\.venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
-```
+# Set GROQ_API_KEY, LLM_PROVIDER=groq for UI/Loom
 
-### 3. Start OpenSearch + ingest
-
-```bash
 docker compose up -d
-python scripts\download_docs.py   # if PDFs not present
+python scripts\download_docs.py
 python -m src.ingest
+
+uvicorn src.api:app --port 8000
 ```
 
-### 4. Ask via CLI or API
+**UI:** `cd demo-ui && npm install && npm run dev` → http://localhost:5173
 
-```bash
-# CLI
-python -m src.rag_chain "What practices are prohibited under Article 5 of the EU AI Act?"
-
-# API
-uvicorn src.api:app --reload --port 8000
-curl -X POST http://localhost:8000/ask -H "Content-Type: application/json" -d "{\"question\": \"What are the NIST AI RMF functions?\"}"
-```
-
-### 5. Evaluate (Phase 4)
-
-```bash
-pip install -r requirements-eval.txt          # once (RAGAS deps)
-
-# Fast: 10 questions, keyword regression only
-python -m src.eval --limit 10 --keyword-only
-
-# Full keyword suite (50 questions)
-python -m src.eval --keyword-only
-
-# RAGAS metrics (Ollama judge — saves Groq)
-python -m src.eval --limit 10 --ragas --judge ollama
-```
-
-See [docs/EVAL.md](docs/EVAL.md).
-
-### 6. Tests
-
-```bash
-pytest tests/ -q
-```
+**Tests:** `pytest tests/ -q`
 
 ---
 
-## Free tier strategy
+## Demo scripts (`scripts/demo.ps1`, `scripts/demo.sh`)
 
-| While coding | For demo video |
-|--------------|----------------|
-| `LLM_PROVIDER=ollama` | `LLM_PROVIDER=groq` |
-| `VECTOR_BACKEND=faiss` | `VECTOR_BACKEND=pinecone` |
-
-Never burn Groq/Pinecone quota during daily development.
-
----
-
-## Demo questions
-
-1. What practices are prohibited under Article 5 of the EU AI Act?
-2. What are the four functions in the NIST AI RMF?
-3. How does India DPDP define personal data?
-4. What are the penalties for violating the EU AI Act?
-
----
-
-## Live demo (Render + React UI)
-
-1. `python scripts\prepare_deploy.py` after ingest  
-2. Deploy API + static UI — [docs/DEPLOY.md](docs/DEPLOY.md)  
-3. Local UI: `cd demo-ui && npm install && npm run dev`
-
-## Demo script (Loom)
+Optional **API smoke test** — not required if you use the React UI. They call `/health` and POST three governance questions to `localhost:8000` and print short answers. Useful for Loom B-roll or CI-style checks.
 
 ```powershell
 uvicorn src.api:app --port 8000
 .\scripts\demo.ps1
 ```
 
-## Project docs
+---
 
-- [USE_CASE.md](docs/USE_CASE.md) — why these PDFs
-- [ARCHITECTURE.md](docs/ARCHITECTURE.md) — data flow (beginner-friendly)
-- [INTEGRATION.md](docs/INTEGRATION.md) — Project 2 agent API
-- [PINECONE.md](docs/PINECONE.md) — optional cloud vector (TODO)
+## Deployment
+
+Hosted FAISS bundle (vector-only, no OpenSearch): [docs/DEPLOY.md](docs/DEPLOY.md)
+
+---
+
+## Documentation
+
+| Doc | Contents |
+|-----|----------|
+| [USE_CASE.md](docs/USE_CASE.md) | Corpus & demo questions |
+| [EVAL.md](docs/EVAL.md) | Evaluation design |
+| [PINECONE.md](docs/PINECONE.md) | Cloud vector backend |
+| [INTEGRATION.md](docs/INTEGRATION.md) | Project 2 API contract |
+| [LOOM_P1.md](docs/LOOM_P1.md) | Recording checklist |
+| [LOOM_SCRIPT_P1.md](docs/LOOM_SCRIPT_P1.md) | Narration script |
+
+**Learning path (mentor order):** [../projects-plan/AI_ENGINEERING_CURRICULUM.md](../projects-plan/AI_ENGINEERING_CURRICULUM.md)
+
+---
+
+## License
+
+Portfolio / educational use. Regulatory PDFs remain property of their publishers; links in `scripts/download_docs.py`.

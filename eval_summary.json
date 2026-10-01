@@ -1,0 +1,22 @@
+{
+  "golden_file": "golden_qa.json",
+  "n_questions": 50,
+  "answer_keyword": {
+    "pass_rate": 0.8,
+    "avg_keyword_score": 0.76,
+    "n": 50,
+    "command": "python -m src.eval --keyword-only"
+  },
+  "ragas": {
+    "judge": "groq",
+    "judge_model": "openai/gpt-oss-20b",
+    "n": 50,
+    "command": "python -m src.eval --ragas-only --judge groq",
+    "metrics": {
+      "faithfulness": 0.437,
+      "answer_relevancy": 0.859,
+      "context_precision": 0.267
+    },
+    "notes": "Late steps hit Groq daily token cap (429). RAGAS still returned aggregate scores at 150/150."
+  }
+}

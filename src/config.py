@@ -24,7 +24,9 @@ CACHE_DIR = ROOT / ".cache"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama").lower()
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "300"))
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_REQUEST_TIMEOUT = float(os.getenv("GROQ_REQUEST_TIMEOUT", "120"))
 # llama-3.1-8b-instant deprecated on Groq Aug 2026 → use gpt-oss-20b
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 # Defaults to GROQ_MODEL (gpt-oss-20b on free tier). Enterprise: llama-3.3-70b-versatile.

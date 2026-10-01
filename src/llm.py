@@ -18,9 +18,11 @@ from src.config import (
     CACHE_DIR,
     GROQ_API_KEY,
     GROQ_MODEL,
+    GROQ_REQUEST_TIMEOUT,
     LLM_PROVIDER,
     OLLAMA_BASE_URL,
     OLLAMA_MODEL,
+    OLLAMA_TIMEOUT,
 )
 
 
@@ -58,7 +60,7 @@ def _call_ollama(prompt: str) -> str:
             "num_gpu": 0,  # force CPU — avoids CUDA crashes on some Windows GPUs
         },
     }
-    with httpx.Client(timeout=180.0) as client:
+    with httpx.Client(timeout=OLLAMA_TIMEOUT) as client:
         resp = client.post(url, json=payload)
         if resp.status_code >= 400:
             # Surface Ollama's real error (often OOM / context too large).
@@ -79,7 +81,12 @@ def _call_groq(prompt: str) -> str:
     if not GROQ_API_KEY:
         raise ValueError("GROQ_API_KEY missing in .env")
 
-    llm = ChatGroq(model=GROQ_MODEL, api_key=GROQ_API_KEY, temperature=0)
+    llm = ChatGroq(
+        model=GROQ_MODEL,
+        api_key=GROQ_API_KEY,
+        temperature=0,
+        request_timeout=GROQ_REQUEST_TIMEOUT,
+    )
     result = llm.invoke([HumanMessage(content=prompt)])
     return result.content
 

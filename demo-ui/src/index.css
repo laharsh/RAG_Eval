@@ -24,10 +24,68 @@ header h1 {
   margin: 0 0 0.25rem;
 }
 
-header p {
+.tagline {
   margin: 0;
   color: #475569;
   font-size: 0.95rem;
+}
+
+.corpus {
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.corpus h2 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.corpus ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.corpus li {
+  margin: 0.25rem 0;
+}
+
+.corpus-note {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.corpus a {
+  color: #2563eb;
+}
+
+.field-label,
+.try-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 0.35rem;
+}
+
+.try-label {
+  margin-top: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+footer code {
+  font-size: 0.75rem;
+  background: #e2e8f0;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
 }
 
 .tabs {

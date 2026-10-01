@@ -10,8 +10,8 @@
 
 | Eval run | Questions | Faithfulness | Answer relevancy | Context precision | Notes |
 |----------|-----------|--------------|------------------|-------------------|--------|
-| RAGAS (Groq judge) | 10 | **0.34** | **0.86** | **0.36** | `eval_report.json` — re-run at 50 Q before final resume |
-| Keyword (NIST subset) | 10 | — | — | — | 100% pass, avg 0.80 (from earlier run — re-run if needed) |
+| RAGAS (Groq judge) | 50 | **0.44** | **0.86** | **0.27** | `eval_summary.json` |
+| Keyword (full RAG) | 50 | — | — | — | **80%** pass, avg 0.76 |
 
 **Commands to refresh metrics:**
 

@@ -1,13 +1,10 @@
-# Pinecone demo mode (optional)
+# Pinecone — managed vector database (cloud leg)
 
-P1 runs on **FAISS + OpenSearch** by default (free, local). Pinecone is for **demo / cloud vector** keyword on the resume.
+**Why Pinecone after FAISS:** FAISS is an in-process index (great for dev and Docker demos). **Pinecone** is a hosted vector DB—what many teams use when they need scale, uptime, and metadata filters without operating disk indexes.
 
-## Status
+Config: `VECTOR_BACKEND=pinecone` in `.env` (see `config.py`).
 
-- Config keys exist in `config.py` (`VECTOR_BACKEND=pinecone`).
-- **Upsert + query wiring** is tracked in [TODO.md](../TODO.md) — implement before claiming Pinecone on resume.
-
-## When you implement
+## Implementation checklist
 
 1. `pip install pinecone-client` (or current SDK per Pinecone docs).
 2. Add `src/pinecone_store.py`: upsert chunk ids + metadata on ingest; similarity search by embedding.

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const API = import.meta.env.VITE_API_URL?.replace(/\/$/, "") || "http://localhost:8000";
+const GITHUB = "https://github.com/laharsh/RAG_Eval";
 
 type Tab = "knowledge" | "operations";
 
@@ -13,15 +14,33 @@ type AskResponse = {
   retrieval: string;
 };
 
-const SAMPLES = [
-  "What are the four functions in the NIST AI RMF?",
-  "What practices are prohibited under Article 5 of the EU AI Act?",
-  "How does India DPDP define personal data?",
+const SAMPLE_QUESTIONS: { label: string; question: string; hint: string }[] = [
+  {
+    label: "NIST",
+    hint: "US risk framework",
+    question: "What are the four functions in the NIST AI RMF?",
+  },
+  {
+    label: "EU AI Act",
+    hint: "Prohibited AI practices",
+    question: "What practices are prohibited under Article 5 of the EU AI Act?",
+  },
+  {
+    label: "India DPDP",
+    hint: "Personal data definition",
+    question: "How does India DPDP define personal data?",
+  },
+];
+
+const CORPUS = [
+  "EU AI Act (Regulation 2024/1689) — binding AI law in the EU",
+  "NIST AI Risk Management Framework 1.0 — Govern, Map, Measure, Manage",
+  "India Digital Personal Data Protection Act, 2023 — personal data & fiduciaries",
 ];
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("knowledge");
-  const [question, setQuestion] = useState(SAMPLES[0]);
+  const [question, setQuestion] = useState(SAMPLE_QUESTIONS[0].question);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AskResponse | null>(null);
@@ -61,12 +80,35 @@ export default function App() {
     }
   }, [question]);
 
+  const pickSample = (q: string) => {
+    setQuestion(q);
+    setError(null);
+    setResult(null);
+  };
+
   return (
     <div className="app">
       <header>
         <h1>AI Governance Console</h1>
-        <p>Regulatory Q&A over EU AI Act, NIST AI RMF, and India DPDP.</p>
+        <p className="tagline">
+          Compliance teams can&apos;t keyword-search 200-page regulations. Ask in plain
+          English and get answers with PDF citations.
+        </p>
       </header>
+
+      <section className="corpus" aria-label="Document corpus">
+        <h2>Official corpus (3 PDFs)</h2>
+        <ul>
+          {CORPUS.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+        <p className="corpus-note">
+          Ingested into a hybrid index (FAISS + BM25 when OpenSearch runs locally). Eval:
+          50 golden Q&amp;A + RAGAS metrics in the{" "}
+          <a href={GITHUB} target="_blank" rel="noreferrer">GitHub repo</a>.
+        </p>
+      </section>
 
       <div className="tabs">
         <button
@@ -83,23 +125,27 @@ export default function App() {
 
       {tab === "knowledge" && (
         <div className="panel">
+          <label className="field-label" htmlFor="question-input">Your question</label>
           <textarea
+            id="question-input"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             aria-label="Question"
           />
+          <p className="try-label">Try a demo question</p>
           <div className="actions">
             <button type="button" onClick={ask} disabled={loading}>
               {loading ? "Asking…" : "Ask"}
             </button>
-            {SAMPLES.map((s) => (
+            {SAMPLE_QUESTIONS.map((s) => (
               <button
-                key={s}
+                key={s.label}
                 type="button"
                 className="secondary"
-                onClick={() => setQuestion(s)}
+                title={s.hint}
+                onClick={() => pickSample(s.question)}
               >
-                Sample
+                {s.label}
               </button>
             ))}
           </div>
@@ -109,7 +155,7 @@ export default function App() {
               <div className="answer">{result.answer}</div>
               <p className="meta">Retrieval: {result.retrieval}</p>
               <div className="sources">
-                <strong>Sources ({result.sources.length})</strong>
+                <strong>Sources ({result.sources.length}) — verify in the PDF</strong>
                 {result.sources.map((s, i) => (
                   <div key={i} className="source-card">
                     <strong>{s.source} — page {s.page ?? "?"}</strong>
@@ -125,7 +171,8 @@ export default function App() {
       <footer>
         API: {API} · {health}
         <br />
-        Keys stay on the server (Groq). Hybrid search available when running OpenSearch locally.
+        LLM keys stay on the server. For recording: use <code>LLM_PROVIDER=groq</code> in
+        API <code>.env</code> for fast answers.
       </footer>
     </div>
   );
